@@ -1,10 +1,40 @@
 import { ChainId } from "@brewlabs/sdk";
 import { bsc, mainnet, arbitrum, polygon, avalanche, fantom, cronos, brise, bscTestnet, goerli } from "contexts/wagmi";
 
+// Extend ChainId enum with new chain ids
+enum ExtendedChainId {
+  ETHEREUM = 1,
+  BSC_MAINNET = 56,
+  FANTOM = 250,
+  POLYGON = 137,
+  AVALANCHE = 43114,
+  CRONOS = 25,
+  BRISE = 32520,
+  ARBITRUM = 42161,
+  BASE = 8453,
+  GOERLI = 5,
+  BSC_TESTNET = 97,
+  // Add Solana chain id for deployer
+  SOLANA = 900,
+}
+
+// Augment ChainId type to include the new extended values
+export type AugmentedChainId = ChainId | ExtendedChainId;
+
 export const SupportedChains = [bsc, mainnet, arbitrum, polygon, avalanche, fantom, cronos, brise, bscTestnet, goerli];
 
-export const SUPPORTED_CHAIN_IDS = SupportedChains.map((chain) => chain.id);
-export const PAGE_SUPPORTED_CHAINS: { [key: string]: ChainId[] } = {
+const customChainIds = [900]; // New custom chain IDs to be added
+
+export const SUPPORTED_CHAIN_IDS = [
+  ...SupportedChains.map((chain) => chain.id),
+  ...customChainIds, // Append the custom chain IDs to the array
+];
+
+// For testing purposes
+// Make sure this is not included in production
+const TEST_NETWORKS = [ChainId.BSC_TESTNET];
+
+export const PAGE_SUPPORTED_CHAINS = {
   chart: [ChainId.ETHEREUM, ChainId.BSC_MAINNET],
   farms: [
     ChainId.ETHEREUM,
@@ -14,6 +44,7 @@ export const PAGE_SUPPORTED_CHAINS: { [key: string]: ChainId[] } = {
     ChainId.AVALANCHE,
     ChainId.CRONOS,
     ChainId.BRISE,
+    ChainId.ARBITRUM,
   ],
   staking: [
     ChainId.ETHEREUM,
@@ -25,18 +56,46 @@ export const PAGE_SUPPORTED_CHAINS: { [key: string]: ChainId[] } = {
     ChainId.BRISE,
   ],
   indexes: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.POLYGON],
-  deployer: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.POLYGON, ChainId.ARBITRUM],
-  swap: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.ARBITRUM, ChainId.POLYGON, ChainId.FANTOM, ChainId.BSC_TESTNET],
-  add: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.POLYGON, ChainId.BSC_TESTNET],
-  remove: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.POLYGON, ChainId.BSC_TESTNET],
-  constructor: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.POLYGON, ChainId.BSC_TESTNET],
+  ["deploy-index"]: [ChainId.POLYGON, ChainId.BSC_MAINNET, ...TEST_NETWORKS],
+  ["deploy-farm"]: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ...TEST_NETWORKS],
+  ["deploy-token"]: [
+    ChainId.ETHEREUM,
+    ChainId.BSC_MAINNET,
+    ChainId.ARBITRUM,
+    ChainId.BASE,
+    ExtendedChainId.SOLANA,
+    ...TEST_NETWORKS,
+  ],
+  ["deploy-pool"]: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.ARBITRUM, ExtendedChainId.SOLANA, ...TEST_NETWORKS],
+  deployerPoolFactory: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.ARBITRUM, ChainId.BASE],
+  swap: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.ARBITRUM, ChainId.POLYGON, ChainId.FANTOM],
+  add: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.POLYGON],
+  remove: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.POLYGON],
+  constructor: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.POLYGON],
   zapper: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.POLYGON],
   bridge: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.POLYGON],
   nft: [ChainId.ETHEREUM, ChainId.BSC_MAINNET],
   tradingPairs: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.ARBITRUM, ChainId.POLYGON, ChainId.FANTOM],
-  "": [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.POLYGON],
+  "": [
+    ChainId.ETHEREUM,
+    ChainId.BSC_MAINNET,
+    ChainId.POLYGON,
+    ChainId.FANTOM,
+    ChainId.AVALANCHE,
+    ChainId.CRONOS,
+    ChainId.BRISE,
+  ],
   draw: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.POLYGON],
-  communities: [ChainId.ETHEREUM, ChainId.BSC_MAINNET, ChainId.BSC_TESTNET, ChainId.POLYGON],
+  default: [
+    ChainId.ETHEREUM,
+    ChainId.BSC_MAINNET,
+    ChainId.POLYGON,
+    ChainId.FANTOM,
+    ChainId.AVALANCHE,
+    ChainId.CRONOS,
+    ChainId.BRISE,
+    ChainId.ARBITRUM,
+  ],
 };
 
 export const CHAIN_KEYS = {
@@ -72,6 +131,7 @@ export const EXPLORER_URLS = {
   [ChainId.BSC_MAINNET]: "https://bscscan.com",
   [ChainId.POLYGON]: "https://polygonscan.com",
   [ChainId.FANTOM]: "https://ftmscan.com",
+  [ExtendedChainId.SOLANA]: "https://solscan.io",
 };
 
 export const EXPLORER_API_URLS = {
@@ -90,7 +150,7 @@ export const EXPLORER_API_KEYS = {
   [ChainId.FANTOM]: "BFCVDJ6EW9GQHGNDEUMDSM3HU6KACMWPPC",
 };
 
-export const CHAIN_LABLES = {
+export const CHAIN_LABELS = {
   [ChainId.ETHEREUM]: "Ethereum",
   [ChainId.ARBITRUM]: "Arbitrum",
   [ChainId.BSC_MAINNET]: "BNB Smart Chain",
@@ -102,6 +162,9 @@ export const CHAIN_LABLES = {
 
   [ChainId.GOERLI]: "Goerli",
   [ChainId.BSC_TESTNET]: "BSC Testnet",
+
+  900: "Solana",
+  // 901: "Solana Devnet",
 };
 
 export const CHAIN_ICONS = {
@@ -118,6 +181,9 @@ export const CHAIN_ICONS = {
   [ChainId.BSC_TESTNET]: "/images/networks/bsc.png",
   8453: "/images/networks/base.png",
   324: "/images/networks/zksync.png",
+
+  900: "/images/networks/Solana_logo.png",
+  // 901: "/images/networks/solana.png",
 };
 
 export const EXPLORER_LOGO = {
@@ -150,7 +216,7 @@ export const EMPTY_TOKEN_LOGO = {
 
 export const NetworkOptions = SUPPORTED_CHAIN_IDS.map((chainId: ChainId) => ({
   id: chainId,
-  name: CHAIN_LABLES[chainId],
+  name: CHAIN_LABELS[chainId],
   image: CHAIN_ICONS[chainId],
 }));
 
@@ -182,7 +248,7 @@ export const NETWORKS = {
     },
     rpcUrls: [
       "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
-      "https://eth.llamarpc.com",
+      // "https://eth.llamarpc.com",
       "https://ethereum.publicnode.com",
       "https://eth.meowrpc.com",
     ],
@@ -221,7 +287,7 @@ export const NETWORKS = {
     rpcUrls: [
       "https://bsc-dataseed1.defibit.io",
       "https://bsc-dataseed1.ninicoin.io",
-      "https://bsc-dataseed.binance.org",
+      "https://bsc-dataseed.bnbchain.org",
     ],
     blockExplorerUrls: ["https://bscscan.com"],
   },
@@ -244,7 +310,7 @@ export const NETWORKS = {
       symbol: "MATIC",
       decimals: 18,
     },
-    rpcUrls: ["https://polygon.llamarpc.com", "https://polygon.meowrpc.com"],
+    rpcUrls: ["https://rpc-mainnet.matic.quiknode.pro", "https://polygon.meowrpc.com"],
     blockExplorerUrls: ["https://polygonscan.com"],
   },
   [ChainId.FANTOM]: {

@@ -7,7 +7,7 @@ import { useAccount } from "wagmi";
 import Container from "components/layout/Container";
 import PageWrapper from "components/layout/PageWrapper";
 import PageHeader from "components/layout/PageHeader";
-import WordHighlight from "components/text/WordHighlight";
+import ButtonProductDeploy from "components/productDeployer/ButtonProductDeploy";
 
 import { Category } from "config/constants/types";
 import { TokenPriceContext } from "contexts/TokenPriceContext";
@@ -18,14 +18,12 @@ import { useChainCurrentBlocks } from "state/block/hooks";
 import { filterPoolsByStatus } from "utils";
 import getCurrencyId from "utils/getCurrencyId";
 
-import Banner from "views/directory/Banner";
 import IndexDetail from "views/directory/IndexDetail";
 import FarmingDetail from "views/directory/FarmingDetail";
 import StakingDetail from "views/directory/StakingDetail";
 
 import PoolList from "./PoolList";
 import SelectionPanel from "./SelectionPanel";
-import { DocSVG } from "@components/dashboard/assets/svgs";
 
 const Deployer = ({ page, type }: { page: number; type?: string }) => {
   const [curFilter, setCurFilter] = useState(page);
@@ -196,36 +194,24 @@ const Deployer = ({ page, type }: { page: number; type?: string }) => {
             exit={{ opacity: 0, scale: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="absolute left-0 top-0 max-h-screen w-full overflow-y-scroll">
+            <div className="absolute left-0 top-0 max-h-screen w-full overflow-y-auto">
               <PageHeader
-                title={
-                  <div className="text-[40px]">
-                    <WordHighlight content="Product Deployer" />
-                    <a
-                      className="primary-shadow mt-2 flex w-fit items-center rounded bg-[#FFFFFF1A] p-2 font-roboto text-xs font-bold !text-primary transition hover:scale-[1.1]"
-                      href="https://brewlabs.gitbook.io/welcome-to-brewlabs/brewlabs-defi-products/brewlabs-2023/live-product-deployer"
-                      target="_blank"
-                    >
-                      <div>LEARN MORE</div>
-                      <div className="ml-1 [&>svg]:!h-2.5 [&>svg]:!w-2.5">{DocSVG}</div>
-                    </a>
-                  </div>
+                title="Product Deployer"
+                tagline="Deploy smart contracts"
+                summary={
+                  <>
+                   The Brewlabs product deployer is a simple tool that uses a step-by-step process to assist in the 
+                    deployment of smart contracts across a range of networks.  All contracts that are deployed by the
+                    Brewlabs deployer are safe, transparent and verified to ensure user security. Deploy and share your 
+                    latest products with your community, get started below.
+                  </>
                 }
-              />
+                infoLink="https://brewlabs.gitbook.io/welcome-to-brewlabs/brewlabs-defi-products/brewlabs-2023/live-product-deployer"
+              >
+                <ButtonProductDeploy />
+              </PageHeader>
 
-              <Container className="pb-[180px] font-brand">
-                <div className="mb-20 flex flex-col items-center justify-between sm:flex-row">
-                  <div>
-                    <div className="text-lg leading-[1.2] text-primary">Deploy smart contracts.</div>
-                    <div className="mt-1.5 max-w-[1000px] text-sm leading-[1.2]">
-                      The Brewlabs product deployer is a simple tool that uses a step-by-step wizard to assist in the
-                      deployment of smart contracts across a range of networks. No matter if you are a novice or an
-                      expert in the industry, this simple deployment tool enables teams to create tokens, supporting
-                      utility smart contract, staking and yield farming and more. All contracts that are deployed by our
-                      deployer tools are safe, transparent and verified to ensure user security.
-                    </div>
-                  </div>
-                </div>
+              <Container className="pd-4 font-brand">
                 <div className="mt-8">
                   <SelectionPanel
                     pools={allPools}
@@ -237,7 +223,7 @@ const Deployer = ({ page, type }: { page: number; type?: string }) => {
                     setActivity={setStatus}
                   />
                 </div>
-                <div className="mb-[100px] mt-[18px]">
+                <div className="mb-24 mt-5">
                   <PoolList
                     pools={chosenPools}
                     setSelectPoolDetail={setSelectPoolDetail}

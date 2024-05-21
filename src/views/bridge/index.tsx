@@ -15,14 +15,13 @@ import { useSupportedNetworks } from "hooks/useSupportedNetworks";
 import { useTokenPrices } from "hooks/useTokenPrice";
 import { formatValue } from "lib/bridge/helpers";
 import { fetchTokenBalance } from "lib/bridge/token";
-
+import { DocumentTextIcon } from "@heroicons/react/24/outline";
 import Container from "components/layout/Container";
 import PageHeader from "components/layout/PageHeader";
 import PageWrapper from "components/layout/PageWrapper";
 import ChainSelector from "components/ChainSelector";
 import CryptoCard from "components/cards/CryptoCard";
 import InputNumber from "components/inputs/InputNumber";
-import WordHighlight from "components/text/WordHighlight";
 import { useGlobalState, setGlobalState } from "state";
 
 import BridgeDragButton from "components/bridge/BridgeDragButton";
@@ -232,13 +231,32 @@ const Bridge: NextPage = () => {
   return (
     <PageWrapper>
       <PageHeader
-        title={
+        title="Transfer your tokens between various networks with the Brewlabs Bridge"
+        summary={
           <>
-            Transfer tokens <WordHighlight content="cross-chain" /> with the Brewlabs bridge.
+            The Brewlabs Bridge allows the transfer of Brewlabs tokens across multiple networks. Users can use this
+            bridging tool to bridge between BNB Chain, Polygon Network and Ethereum Network. Bridging only takes a few
+            minutes between your wallets.
           </>
         }
-        summary="Easily transfer tokens with confidence."
-      />
+      >
+        <a
+          className="btn mt-4"
+          target="_blank"
+          href="https://brewlabs.gitbook.io/welcome-to-brewlabs/brewlabs-defi-products/brewlabs-2022/live-brewlabs-bridge"
+        >
+          <DocumentTextIcon className="h-auto w-6" />
+          Learn more
+        </a>
+        <a
+          className="btn mt-4"
+          target="_blank"
+          href="https://brewlabs.gitbook.io/welcome-to-brewlabs/brewlabs-defi-products/brewlabs-2022/live-brewlabs-bridge"
+        >
+          <DocumentTextIcon className="h-auto w-6" />
+          Learn more
+        </a>
+      </PageHeader>
 
       <BridgeLoadingModal />
 
