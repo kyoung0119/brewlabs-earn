@@ -23,18 +23,13 @@ import SwitchNetworkModal from "../network/SwitchNetworkModal";
 import WrongNetworkModal from "../network/WrongNetworkModal";
 
 //Solana
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useSolanaNetwork } from "contexts/SolanaNetworkContext";
-import useUserSOLBalanceStore from "../../store/useUserSOLBalanceStore";
 import { ChainId } from "@brewlabs/sdk";
 import dynamic from "next/dynamic";
 const Wallets = dynamic(() => import("./Wallets"), { ssr: false });
-
 interface ConnectWalletProps {
   allowDisconnect?: boolean;
 }
-
 interface ConnectWalletProps {
   allowDisconnect?: boolean;
 }
@@ -76,13 +71,7 @@ const ConnectWallet = ({ allowDisconnect }: ConnectWalletProps) => {
 
   const [userSidebarOpen, setUserSidebarOpen] = useGlobalState("userSidebarOpen");
   const [userSidebarContent, setUserSidebarContent] = useGlobalState("userSidebarContent");
-  // Solana
-  const { connected, wallets } = useWallet();
-  const wallet = useWallet();
-  const { connection } = useConnection();
   const { isSolanaNetwork, setIsSolanaNetwork } = useSolanaNetwork();
-  const balance = useUserSOLBalanceStore((s) => s.balance);
-  const { getUserSOLBalance } = useUserSOLBalanceStore();
 
   // Get URL chainId
   const searchParams = useSearchParams();
