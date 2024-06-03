@@ -28,6 +28,8 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useSolanaNetwork } from "contexts/SolanaNetworkContext";
 import useUserSOLBalanceStore from "../../store/useUserSOLBalanceStore";
 import { ChainId } from "@brewlabs/sdk";
+import dynamic from "next/dynamic";
+const Wallets = dynamic(() => import("./Wallets"), { ssr: false });
 
 interface ConnectWalletProps {
   allowDisconnect?: boolean;
@@ -75,7 +77,7 @@ const ConnectWallet = ({ allowDisconnect }: ConnectWalletProps) => {
   const [userSidebarOpen, setUserSidebarOpen] = useGlobalState("userSidebarOpen");
   const [userSidebarContent, setUserSidebarContent] = useGlobalState("userSidebarContent");
   // Solana
-  const { connected } = useWallet();
+  const { connected, wallets } = useWallet();
   const wallet = useWallet();
   const { connection } = useConnection();
   const { isSolanaNetwork, setIsSolanaNetwork } = useSolanaNetwork();
@@ -117,11 +119,11 @@ const ConnectWallet = ({ allowDisconnect }: ConnectWalletProps) => {
     } else setIsSolanaNetwork(false);
   }, [chainId, setIsSolanaNetwork]);
 
-  useEffect(() => {
-    if (wallet.publicKey) {
-      getUserSOLBalance(wallet.publicKey, connection);
-    }
-  }, [wallet.publicKey, connection, getUserSOLBalance]);
+  // useEffect(() => {
+  //   if (wallet.publicKey) {
+  //     getUserSOLBalance(wallet.publicKey, connection);
+  //   }
+  // }, [wallet.publicKey, connection, getUserSOLBalance]);
 
   if (!mounted) return null;
 
@@ -138,8 +140,15 @@ const ConnectWallet = ({ allowDisconnect }: ConnectWalletProps) => {
       <WrongNetworkModal open={isWrongNetwork} />
       {isSolanaNetwork ? (
         <div className="flex flex-col">
-          <WalletMultiButton />
-          {wallet && <p>SOL Balance: {(balance || 0).toLocaleString()}</p>}
+          <WalletMultiButton className="wallet-button" />
+          {/* <Wallets /> */}
+          <p className="truncate text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-100">
+            {isLoading ? "..." : truncatedAddress(address)}
+          </p>
+          <p className="whitespace-nowrap text-left text-sm font-medium">
+            <span className={clsx(isWrongNetwork ? "text-red-400" : "text-slate-400")}>{chain?.name}</span>
+          </p>
+          {/* {wallet && <p>SOL Balance: {(balance || 0).toLocaleString()}</p>} */}
         </div>
       ) : !isConnected ? (
         <button
